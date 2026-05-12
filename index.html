@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>沖繩行程管理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f4f8;--surface:#fff;--surface2:#f7f9fb;
+  --text:#1a2d3d;--text2:#5a6f7f;--text3:#8fa0ad;
+  --accent:#0d7a9c;--accent-light:#e3f3f8;--accent-dark:#085f7a;
+  --danger:#c0392b;--danger-light:#fde8e6;
+  --border:rgba(13,122,156,0.15);--border2:rgba(13,122,156,0.25);
+  --tag-transport:#e8f0fe;--tag-transport-t:#1a3a8a;
+  --tag-food:#fde8cc;--tag-food-t:#7a3d00;
+  --tag-sight:#e6f4ea;--tag-sight-t:#1a5c2a;
+  --tag-hotel:#f3e8fd;--tag-hotel-t:#5a1080;
+  --tag-note:#fff3cd;--tag-note-t:#6b4c00;
+  --tag-other:#eee;--tag-other-t:#444;
+  --r:10px;--r-sm:6px;
+}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
+
+/* Layout */
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:0}
+.sidebar-head{padding:1.25rem 1rem 1rem;border-bottom:1px solid var(--border)}
+.sidebar-head h1{font-family:'Noto Serif TC',serif;font-size:1.1rem;color:var(--accent);font-weight:600;margin-bottom:2px}
+.sidebar-head p{font-size:0.75rem;color:var(--text2)}
+.sidebar-days{flex:1;overflow-y:auto;padding:0.5rem 0}
+.day-btn{width:100%;text-align:left;padding:0.7rem 1rem;border:none;background:none;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:inherit;font-size:0.85rem;color:var(--text);transition:background 0.12s;border-left:3px solid transparent}
+.day-btn:hover{background:var(--accent-light);color:var(--accent)}
+.day-btn.active{background:var(--accent-light);color:var(--accent);border-left-color:var(--accent);font-weight:500}
+.day-badge{font-size:0.65rem;font-weight:700;background:var(--accent);color:#fff;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.day-btn.active .day-badge{background:var(--accent-dark)}
+.sidebar-footer{padding:0.75rem 1rem;border-top:1px solid var(--border)}
+.sidebar-footer button{width:100%;padding:0.5rem;border:1px solid var(--border2);border-radius:var(--r-sm);background:none;cursor:pointer;font-size:0.82rem;color:var(--accent);font-family:inherit;transition:background 0.12s}
+.sidebar-footer button:hover{background:var(--accent-light)}
+
+/* Main */
+.main{display:flex;flex-direction:column;min-height:100vh;overflow:hidden}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0.9rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.topbar-left h2{font-family:'Noto Serif TC',serif;font-size:1.15rem;font-weight:600}
+.topbar-left p{font-size:0.8rem;color:var(--text2);margin-top:1px}
+.topbar-right{display:flex;gap:8px;flex-wrap:wrap}
+
+button{font-family:inherit;cursor:pointer;border:none;transition:all 0.12s}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:0.45rem 0.9rem;border-radius:var(--r-sm);font-size:0.83rem;font-weight:500}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-dark)}
+.btn-ghost{background:none;border:1px solid var(--border2);color:var(--text2)}
+.btn-ghost:hover{background:var(--surface2);color:var(--text)}
+.btn-danger{background:none;border:1px solid transparent;color:var(--danger);padding:0.3rem 0.6rem}
+.btn-danger:hover{background:var(--danger-light)}
+.btn-sm{padding:0.28rem 0.6rem;font-size:0.78rem}
+.btn-icon{padding:0.3rem 0.5rem;border-radius:var(--r-sm);background:none;border:1px solid transparent;color:var(--text2)}
+.btn-icon:hover{background:var(--surface2);border-color:var(--border)}
+
+/* Content */
+.content{flex:1;padding:1.25rem 1.5rem;overflow-y:auto}
+
+/* Stats row */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:1.25rem}
+.stat{background:var(--surface2);border-radius:var(--r-sm);padding:0.65rem 0.85rem}
+.stat-val{font-size:1.3rem;font-weight:500;color:var(--accent);line-height:1}
+.stat-lbl{font-size:0.72rem;color:var(--text2);margin-top:3px}
+
+/* Event list */
+.events-wrap{background:var(--surface);border-radius:var(--r);border:1px solid var(--border)}
+.events-head{padding:0.75rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.events-head h3{font-size:0.8rem;font-weight:500;color:var(--text2);letter-spacing:0.05em;text-transform:uppercase}
+.event-item{display:grid;grid-template-columns:70px 1fr auto;gap:0.75rem;align-items:start;padding:0.85rem 1rem;border-bottom:1px solid var(--border);transition:background 0.1s}
+.event-item:last-child{border-bottom:none}
+.event-item:hover{background:var(--surface2)}
+.event-time{font-size:0.78rem;font-weight:500;color:var(--accent-dark);padding-top:2px;font-variant-numeric:tabular-nums}
+.event-title{font-size:0.92rem;font-weight:500;margin-bottom:3px}
+.event-note{font-size:0.78rem;color:var(--text2);line-height:1.5}
+.event-actions{display:flex;align-items:center;gap:4px;flex-wrap:nowrap}
+.tag{font-size:0.68rem;padding:2px 7px;border-radius:100px;font-weight:500;white-space:nowrap}
+.tag-transport{background:var(--tag-transport);color:var(--tag-transport-t)}
+.tag-food{background:var(--tag-food);color:var(--tag-food-t)}
+.tag-sight{background:var(--tag-sight);color:var(--tag-sight-t)}
+.tag-hotel{background:var(--tag-hotel);color:var(--tag-hotel-t)}
+.tag-note{background:var(--tag-note);color:var(--tag-note-t)}
+.tag-other{background:var(--tag-other);color:var(--tag-other-t)}
+.date-sep{padding:0.45rem 1rem;background:var(--bg);font-size:0.75rem;font-weight:500;color:var(--text2);letter-spacing:0.04em;border-bottom:1px solid var(--border)}
+.empty{padding:2.5rem;text-align:center;color:var(--text2);font-size:0.88rem}
+
+/* Modal */
+.modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.modal-wrap.open{display:flex}
+.modal{background:var(--surface);border-radius:14px;width:100%;max-width:460px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,0.18)}
+.modal-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-head h4{font-family:'Noto Serif TC',serif;font-size:0.95rem;font-weight:600}
+.modal-close{width:26px;height:26px;border-radius:5px;background:none;border:none;cursor:pointer;font-size:0.9rem;color:var(--text2);display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--surface2)}
+.modal-body{padding:1.25rem}
+.modal-foot{padding:0.85rem 1.25rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:0.6rem}
+
+/* Day modal */
+.day-modal-body{padding:1.25rem}
+
+/* Forms */
+.fg{margin-bottom:0.9rem}
+.fg label{display:block;font-size:0.76rem;font-weight:500;color:var(--text2);margin-bottom:0.35rem}
+.fg input,.fg select,.fg textarea{width:100%;padding:0.5rem 0.7rem;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:0.87rem;font-family:inherit;background:var(--bg);color:var(--text);transition:border-color 0.12s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--accent);background:var(--surface)}
+.fg textarea{resize:vertical;min-height:65px}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:0.65rem}
+
+/* Checklist appendix */
+.checklist-wrap{margin-top:1.25rem;background:var(--surface);border-radius:var(--r);border:1px solid var(--border);overflow:hidden}
+.checklist-head{padding:0.75rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.checklist-head h3{font-size:0.8rem;font-weight:500;color:var(--text2);letter-spacing:0.05em;text-transform:uppercase}
+.check-item{display:flex;align-items:start;gap:10px;padding:0.7rem 1rem;border-bottom:1px solid var(--border);transition:background 0.1s}
+.check-item:last-child{border-bottom:none}
+.check-item:hover{background:var(--surface2)}
+.check-item input[type=checkbox]{margin-top:3px;accent-color:var(--accent);width:15px;height:15px;flex-shrink:0;cursor:pointer}
+.check-item label{font-size:0.86rem;cursor:pointer;flex:1}
+.check-item label.done{text-decoration:line-through;color:var(--text2)}
+.check-actions{display:flex;gap:4px;flex-shrink:0}
+
+/* Info cards (route / notes) */
+.info-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.25rem}
+.info-card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);padding:0.9rem 1rem;position:relative}
+.info-card h4{font-size:0.75rem;color:var(--text2);font-weight:500;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px}
+.info-card p{font-size:0.85rem;color:var(--text);line-height:1.6}
+.info-card .edit-corner{position:absolute;top:8px;right:8px;opacity:0;transition:opacity 0.12s}
+.info-card:hover .edit-corner{opacity:1}
+
+/* Responsive */
+@media(max-width:700px){
+  .app{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .info-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <h1>沖繩行程</h1>
+      <p>5天4夜・那霸出發</p>
+    </div>
+    <div class="sidebar-days" id="sidebarDays"></div>
+    <div class="sidebar-footer">
+      <button onclick="openAddDay()">＋ 新增天數</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2 id="topTitle">載入中…</h2>
+        <p id="topSub"></p>
+      </div>
+      <div class="topbar-right" id="topActions"></div>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<!-- Event Modal -->
+<div class="modal-wrap" id="eventModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h4 id="eventModalTitle">新增行程項目</h4>
+      <button class="modal-close" onclick="closeEventModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg"><label>項目名稱</label><input type="text" id="eTitle" placeholder="例：搭乘單軌至旭橋"/></div>
+      <div class="fg-row">
+        <div class="fg"><label>時間</label><input type="time" id="eTime"/></div>
+        <div class="fg">
+          <label>類型</label>
+          <select id="eType">
+            <option value="transport">🚄 交通</option>
+            <option value="food">🍜 餐飲</option>
+            <option value="sight">🗼 景點</option>
+            <option value="hotel">🏨 住宿</option>
+            <option value="note">📝 備注</option>
+            <option value="other">📌 其他</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label>備註（地址、預約資訊等）</label><textarea id="eNote"></textarea></div>
+      <div class="fg"><label>Google Maps 連結（選填）</label><input type="url" id="eMap" placeholder="https://maps.app.goo.gl/..."/></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeEventModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveEvent()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Day Modal -->
+<div class="modal-wrap" id="dayModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h4 id="dayModalTitle">新增天數</h4>
+      <button class="modal-close" onclick="closeDayModal()">✕</button>
+    </div>
+    <div class="day-modal-body">
+      <div class="fg"><label>標題（例：Day 3 北部）</label><input type="text" id="dTitle"/></div>
+      <div class="fg"><label>副標題（景點摘要）</label><input type="text" id="dSub" placeholder="例：古宇利大橋・美麗海水族館"/></div>
+      <div class="fg-row">
+        <div class="fg"><label>日期</label><input type="date" id="dDate"/></div>
+        <div class="fg"><label>Day 編號</label><input type="number" id="dNum" min="1" max="30" placeholder="3"/></div>
+      </div>
+      <div class="fg"><label>路線動線</label><input type="text" id="dRoute" placeholder="例：古宇利 → 蝦蝦飯 → 水族館"/></div>
+      <div class="fg"><label>備注／提醒</label><textarea id="dNotes" placeholder="例：北部車程長，建議07:00前出發"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeDayModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveDay()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Check Item Modal -->
+<div class="modal-wrap" id="checkModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h4 id="checkModalTitle">新增清單項目</h4>
+      <button class="modal-close" onclick="closeCheckModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg"><label>項目內容</label><textarea id="checkText" rows="3" placeholder="例：燒肉王18:20預約已確認"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeCheckModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveCheckItem()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const TAG={transport:'交通',food:'餐飲',sight:'景點',hotel:'住宿',note:'備注',other:'其他'};
+const TAG_CLS={transport:'tag-transport',food:'tag-food',sight:'tag-sight',hotel:'tag-hotel',note:'tag-note',other:'tag-other'};
+
+const SEED_DAYS=[
+  {id:'d1',num:1,title:'DAY 1',sub:'那霸機場・飯店・國際通',date:'',route:'那霸機場 → Nest飯店 → 國際通',notes:'若當日已租車：機場取車 → 飯店放行李 → 再開往牧志周邊停車場。'},
+  {id:'d2',num:2,title:'DAY 2',sub:'豬肉蛋飯糰・波上宮・牧志市場・PARCO・燒肉王',date:'',route:'豬肉蛋飯糰 → 波上宮 → 第一牧志公設市場 → PARCO CITY → 燒肉王',notes:'燒肉王18:20預約，建議15:30前離開PARCO，預留塞車時間。'},
+  {id:'d3',num:3,title:'DAY 3',sub:'古宇利大橋・蝦蝦飯・美麗海水族館',date:'',route:'古宇利大橋觀景台 → 蝦蝦飯 → 美麗海水族館',notes:'北部單日車程長（來回約4~5小時），建議07:00前出發；兩人輪流開車，備水與輕食。水族館認真逛約需3~4小時。'},
+  {id:'d4',num:4,title:'DAY 4',sub:'西來院・泊港魚市場・來客夢・美國村',date:'',route:'西來院（達摩寺）→ 泊港魚市場 → AEON來客夢 → 美國村',notes:'泊港魚市場建議09:00~10:30前抵達較熱鬧。週末美國村傍晚易塞車。'},
+  {id:'d5',num:5,title:'DAY 5',sub:'國際通採購・Ashibinaa・返台',date:'',route:'退房 → 國際通 → 市區免稅 → Ashibinaa OUTLET → 還車 → 那霸空港',notes:'國際線建議預留2.5~3小時（含還車、報到、安檢、免稅取貨）。早班機可略過Ashibinaa，採買改前一日。'},
+];
+
+const SEED_EVENTS={
+  d1:[
+    {id:uid(),time:'13:00',type:'transport',title:'那霸機場 → 旭橋（ゆいレール）',note:'那霸機場站 → 旭橋站，約13分'},
+    {id:uid(),time:'14:00',type:'hotel',title:'Nest 那霸提薩吉飯店 入住',note:'沖繩縣那霸市西2-14-1｜官網：nesthotel.co.jp/tissagenaha'},
+    {id:uid(),time:'16:00',type:'sight',title:'國際通散步・購物',note:'旭橋 → 縣廳前搭單軌；南段可改牧志／美榮橋站下車'},
+    {id:uid(),time:'19:30',type:'food',title:'晚餐：こばこ（已預約）',note:'島野菜とアグー豚・山城牛の店こばこ｜19:30預約｜請確認接駁集合地點與回程'},
+  ],
+  d2:[
+    {id:uid(),time:'08:00',type:'food',title:'早餐：豬肉蛋飯糰',note:'牧志一帶；停車可用アップルパーク牧志2丁目第3（60分¥200）'},
+    {id:uid(),time:'09:30',type:'sight',title:'波上宮參拜',note:'周邊搜「波の上ビーチ 駐車場」'},
+    {id:uid(),time:'11:30',type:'food',title:'午餐：第一牧志公設市場',note:'2樓熟食區可帶上去加工；回牧志停車場同區'},
+    {id:uid(),time:'14:00',type:'sight',title:'PARCO CITY 購物',note:'〒901-2123 浦添市西洲3-1-1｜停車場約4,000台免費｜約15:30前離開'},
+    {id:uid(),time:'18:20',type:'food',title:'晚餐：燒肉王（已預約）',note:'18:20預約｜請以預約分店地址導航'},
+  ],
+  d3:[
+    {id:uid(),time:'07:00',type:'transport',title:'出發：飯店 → 北部（沖繩自動車道）',note:'單程約1.5~2.5小時；建議07:00前出發'},
+    {id:uid(),time:'10:00',type:'sight',title:'古宇利大橋南端觀景台',note:'假日易滿，早到為宜｜地圖搜「古宇利大橋 南側 駐車場」'},
+    {id:uid(),time:'11:30',type:'food',title:'午餐：蝦蝦飯',note:'營業11:00~16:00，務必在此時段內抵達｜停車依店員指示'},
+    {id:uid(),time:'13:30',type:'sight',title:'美麗海水族館',note:'海洋博公園有料停車場｜認真逛含海豚秀約3~4小時｜最晚入場見官網 okinawa-kaiho.jp'},
+    {id:uid(),time:'17:30',type:'transport',title:'回程：北部 → 那霸',note:'預留約2小時車程＋休息；晚餐可在名護市區／許田道之驛／高速公路SA'},
+  ],
+  d4:[
+    {id:uid(),time:'08:30',type:'sight',title:'西來院（達摩寺）',note:'豐見城｜飯店出發約15~25分｜寺方停車格有限，早到為宜'},
+    {id:uid(),time:'09:30',type:'food',title:'泊港魚市場',note:'那霸泊港｜丼、立食、熟食｜建議09:00~10:30抵達較熱鬧｜地圖搜「那霸泊港市場 駐車場」'},
+    {id:uid(),time:'12:30',type:'sight',title:'AEON MALL 來客夢',note:'北中城村｜大型免費停車場（記好車位區號）｜約40~55分車程'},
+    {id:uid(),time:'16:00',type:'sight',title:'美國村',note:'北谷｜Depot Island周邊付費停車場多｜週末傍晚易塞'},
+    {id:uid(),time:'18:30',type:'food',title:'晚餐：美國村或來客夢擇一',note:'塔可、海景酒吧、迴轉壽司等'},
+  ],
+  d5:[
+    {id:uid(),time:'08:00',type:'food',title:'早餐：飯店或國際通早午餐',note:''},
+    {id:uid(),time:'09:30',type:'sight',title:'國際通最後採買',note:'牧志／縣民広場地下停車場'},
+    {id:uid(),time:'11:00',type:'sight',title:'市區免稅店（DFS等）',note:'確認機場取貨櫃台時間是否來得及'},
+    {id:uid(),time:'13:00',type:'sight',title:'Ashibinaa OUTLET',note:'豐見城，近機場｜多為免費大型停車場｜官網：ashibinaa.okinawa'},
+    {id:uid(),time:'15:30',type:'transport',title:'還車＋前往那霸空港',note:'國際線建議預留2.5~3小時；廉航依航空公司規定；還車記得加滿油'},
+  ],
+};
+
+const SEED_CHECKS=[
+  {id:uid(),text:'燒肉王：分店名稱、地址、18:20預約已存手機',done:false},
+  {id:uid(),text:'こばこ：19:30接駁上下車點或自駕停車已確認',done:false},
+  {id:uid(),text:'飯店：是否含早餐、退房時間',done:false},
+  {id:uid(),text:'Day 3：美麗海水族館門票與最晚入場時間',done:false},
+  {id:uid(),text:'Day 5：航班起飛時間、還車與滿油、國際線報到緩衝',done:false},
+  {id:uid(),text:'支付：備千円與零錢（部分停車場僅現金）',done:false},
+  {id:uid(),text:'駕照：國際駕照＋本國駕照（依租車公司規定）',done:false},
+];
+
+function load(){
+  const days=JSON.parse(localStorage.getItem('ok_days')||'null');
+  const events=JSON.parse(localStorage.getItem('ok_events')||'null');
+  const checks=JSON.parse(localStorage.getItem('ok_checks')||'null');
+  const active=localStorage.getItem('ok_active')||'d1';
+  return{
+    days:days||JSON.parse(JSON.stringify(SEED_DAYS)),
+    events:events||JSON.parse(JSON.stringify(SEED_EVENTS)),
+    checks:checks||JSON.parse(JSON.stringify(SEED_CHECKS)),
+    active,
+    view:'day',
+  };
+}
+function persist(s){
+  localStorage.setItem('ok_days',JSON.stringify(s.days));
+  localStorage.setItem('ok_events',JSON.stringify(s.events));
+  localStorage.setItem('ok_checks',JSON.stringify(s.checks));
+  localStorage.setItem('ok_active',s.active);
+}
+
+let S=load();
+
+function render(){
+  renderSidebar();
+  if(S.active==='checks'){renderChecks();}
+  else{renderDay();}
+}
+
+function renderSidebar(){
+  const el=document.getElementById('sidebarDays');
+  el.innerHTML=S.days.map(d=>`
+    <button class="day-btn${S.active===d.id?' active':''}" onclick="setActive('${d.id}')">
+      <span class="day-badge">DAY ${d.num}</span>
+      <span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.title.replace(/^DAY\s*\d+\s*/,'')|| d.sub.split('・')[0]}</span>
+    </button>
+  `).join('')+`
+    <button class="day-btn${S.active==='checks'?' active':''}" onclick="setActive('checks')">
+      <span class="day-badge" style="background:#555">清單</span>
+      <span>出發前檢核</span>
+    </button>
+  `;
+}
+
+function setActive(id){S.active=id;persist(S);render();}
+
+function renderDay(){
+  const day=S.days.find(d=>d.id===S.active);
+  if(!day){document.getElementById('content').innerHTML='<div class="empty">請從左側選擇天數</div>';return;}
+  const evs=(S.events[day.id]||[]).slice().sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'));
+
+  document.getElementById('topTitle').textContent=`${day.title}`;
+  document.getElementById('topSub').textContent=day.sub||'';
+  document.getElementById('topActions').innerHTML=`
+    <button class="btn btn-ghost btn-sm" onclick="openEditDay('${day.id}')">✏️ 編輯天數資訊</button>
+    <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="deleteDay('${day.id}')">🗑 刪除此天</button>
+    <button class="btn btn-primary btn-sm" onclick="openAddEvent('${day.id}')">＋ 新增項目</button>
+  `;
+
+  const totalEvs=evs.length;
+  const byType={};evs.forEach(e=>{byType[e.type]=(byType[e.type]||0)+1;});
+  const statsHtml=`
+    <div class="stats">
+      <div class="stat"><div class="stat-val">${totalEvs}</div><div class="stat-lbl">行程項目</div></div>
+      <div class="stat"><div class="stat-val">${byType.transport||0}</div><div class="stat-lbl">交通</div></div>
+      <div class="stat"><div class="stat-val">${byType.food||0}</div><div class="stat-lbl">餐飲</div></div>
+      <div class="stat"><div class="stat-val">${byType.sight||0}</div><div class="stat-lbl">景點</div></div>
+    </div>
+  `;
+
+  const infoHtml=`
+    <div class="info-row">
+      <div class="info-card">
+        <h4>路線動線</h4>
+        <p>${day.route||'（尚未設定）'}</p>
+        <button class="btn-icon edit-corner btn-sm" onclick="openEditDay('${day.id}')">✏️</button>
+      </div>
+      <div class="info-card">
+        <h4>備注提醒</h4>
+        <p style="font-size:0.82rem;color:var(--text2)">${day.notes||'（尚未設定）'}</p>
+        <button class="btn-icon edit-corner btn-sm" onclick="openEditDay('${day.id}')">✏️</button>
+      </div>
+    </div>
+  `;
+
+  let evListHtml='';
+  if(evs.length===0){
+    evListHtml='<div class="empty">此天尚無行程項目，點右上角「＋ 新增項目」</div>';
+  }else{
+    evListHtml=evs.map(ev=>`
+      <div class="event-item">
+        <div class="event-time">${ev.time||'—'}</div>
+        <div>
+          <div class="event-title">${ev.title}</div>
+          ${ev.note?`<div class="event-note">${ev.note}</div>`:''}
+        </div>
+        <div class="event-actions">
+          <span class="tag ${TAG_CLS[ev.type]||'tag-other'}">${TAG[ev.type]||ev.type}</span>
+          ${ev.map?`<a href="${ev.map}" target="_blank" rel="noopener" title="開啟地圖" style="display:inline-flex;align-items:center;padding:0.28rem 0.55rem;border-radius:var(--r-sm);background:var(--accent-light);color:var(--accent-dark);font-size:0.75rem;font-weight:500;text-decoration:none;white-space:nowrap;border:1px solid var(--border2)">📍 地圖</a>`:''}
+          <button class="btn-icon btn-sm" onclick="openEditEvent('${day.id}','${ev.id}')" title="編輯">✏️</button>
+          <button class="btn-icon btn-sm" style="color:var(--danger)" onclick="deleteEvent('${day.id}','${ev.id}')" title="刪除">🗑</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('content').innerHTML=`
+    ${statsHtml}
+    ${infoHtml}
+    <div class="events-wrap">
+      <div class="events-head"><h3>行程項目</h3></div>
+      ${evListHtml}
+    </div>
+  `;
+}
+
+function renderChecks(){
+  document.getElementById('topTitle').textContent='出發前檢核清單';
+  document.getElementById('topSub').textContent='確認所有項目再出發';
+  const done=S.checks.filter(c=>c.done).length;
+  document.getElementById('topActions').innerHTML=`
+    <button class="btn btn-ghost btn-sm" onclick="openAddCheck()">＋ 新增項目</button>
+  `;
+  const items=S.checks.map(c=>`
+    <div class="check-item">
+      <input type="checkbox" id="ck_${c.id}" ${c.done?'checked':''} onchange="toggleCheck('${c.id}',this.checked)"/>
+      <label for="ck_${c.id}" class="${c.done?'done':''}">${c.text}</label>
+      <div class="check-actions">
+        <button class="btn-icon btn-sm" onclick="openEditCheck('${c.id}')">✏️</button>
+        <button class="btn-icon btn-sm" style="color:var(--danger)" onclick="deleteCheck('${c.id}')">🗑</button>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('content').innerHTML=`
+    <div class="stats">
+      <div class="stat"><div class="stat-val">${S.checks.length}</div><div class="stat-lbl">總項目</div></div>
+      <div class="stat"><div class="stat-val">${done}</div><div class="stat-lbl">已完成</div></div>
+      <div class="stat"><div class="stat-val">${S.checks.length-done}</div><div class="stat-lbl">待確認</div></div>
+    </div>
+    <div class="checklist-wrap">
+      <div class="checklist-head"><h3>清單項目</h3></div>
+      ${items||'<div class="empty">尚無清單項目</div>'}
+    </div>
+  `;
+}
+
+/* ---- Event CRUD ---- */
+let _editEventDayId=null,_editEventId=null;
+
+function openAddEvent(dayId){
+  _editEventDayId=dayId;_editEventId=null;
+  document.getElementById('eventModalTitle').textContent='新增行程項目';
+  document.getElementById('eTitle').value='';
+  document.getElementById('eTime').value='';
+  document.getElementById('eType').value='sight';
+  document.getElementById('eNote').value='';
+  document.getElementById('eMap').value='';
+  document.getElementById('eventModal').classList.add('open');
+}
+
+function openEditEvent(dayId,evId){
+  _editEventDayId=dayId;_editEventId=evId;
+  const ev=(S.events[dayId]||[]).find(e=>e.id===evId);
+  if(!ev)return;
+  document.getElementById('eventModalTitle').textContent='編輯行程項目';
+  document.getElementById('eTitle').value=ev.title;
+  document.getElementById('eTime').value=ev.time||'';
+  document.getElementById('eType').value=ev.type;
+  document.getElementById('eNote').value=ev.note||'';
+  document.getElementById('eMap').value=ev.map||'';
+  document.getElementById('eventModal').classList.add('open');
+}
+
+function closeEventModal(){document.getElementById('eventModal').classList.remove('open');}
+
+function saveEvent(){
+  const title=document.getElementById('eTitle').value.trim();
+  if(!title)return;
+  const data={title,time:document.getElementById('eTime').value,type:document.getElementById('eType').value,note:document.getElementById('eNote').value.trim(),map:document.getElementById('eMap').value.trim()};
+  if(!S.events[_editEventDayId])S.events[_editEventDayId]=[];
+  if(_editEventId){
+    const idx=S.events[_editEventDayId].findIndex(e=>e.id===_editEventId);
+    if(idx>-1)S.events[_editEventDayId][idx]=Object.assign({id:_editEventId},data);
+  }else{
+    S.events[_editEventDayId].push({id:uid(),...data});
+  }
+  persist(S);closeEventModal();render();
+}
+
+function deleteEvent(dayId,evId){
+  if(!confirm('確定刪除此項目？'))return;
+  S.events[dayId]=(S.events[dayId]||[]).filter(e=>e.id!==evId);
+  persist(S);render();
+}
+
+/* ---- Day CRUD ---- */
+let _editDayId=null;
+
+function openAddDay(){
+  _editDayId=null;
+  document.getElementById('dayModalTitle').textContent='新增天數';
+  document.getElementById('dTitle').value='';
+  document.getElementById('dSub').value='';
+  document.getElementById('dDate').value='';
+  document.getElementById('dNum').value=S.days.length+1;
+  document.getElementById('dRoute').value='';
+  document.getElementById('dNotes').value='';
+  document.getElementById('dayModal').classList.add('open');
+}
+
+function openEditDay(id){
+  _editDayId=id;
+  const d=S.days.find(x=>x.id===id);
+  if(!d)return;
+  document.getElementById('dayModalTitle').textContent='編輯天數資訊';
+  document.getElementById('dTitle').value=d.title;
+  document.getElementById('dSub').value=d.sub||'';
+  document.getElementById('dDate').value=d.date||'';
+  document.getElementById('dNum').value=d.num;
+  document.getElementById('dRoute').value=d.route||'';
+  document.getElementById('dNotes').value=d.notes||'';
+  document.getElementById('dayModal').classList.add('open');
+}
+
+function closeDayModal(){document.getElementById('dayModal').classList.remove('open');}
+
+function saveDay(){
+  const title=document.getElementById('dTitle').value.trim();
+  const num=parseInt(document.getElementById('dNum').value)||1;
+  if(!title&&!num)return;
+  const data={
+    title:title||`DAY ${num}`,
+    sub:document.getElementById('dSub').value.trim(),
+    date:document.getElementById('dDate').value,
+    num,
+    route:document.getElementById('dRoute').value.trim(),
+    notes:document.getElementById('dNotes').value.trim(),
+  };
+  if(_editDayId){
+    const idx=S.days.findIndex(d=>d.id===_editDayId);
+    if(idx>-1)S.days[idx]=Object.assign({id:_editDayId},data);
+  }else{
+    const id=uid();
+    S.days.push({id,...data});
+    S.events[id]=[];
+    S.active=id;
+  }
+  S.days.sort((a,b)=>a.num-b.num);
+  persist(S);closeDayModal();render();
+}
+
+function deleteDay(id){
+  if(!confirm('確定刪除此天及其所有行程？'))return;
+  S.days=S.days.filter(d=>d.id!==id);
+  delete S.events[id];
+  S.active=S.days[0]?.id||'checks';
+  persist(S);render();
+}
+
+/* ---- Check CRUD ---- */
+let _editCheckId=null;
+
+function openAddCheck(){
+  _editCheckId=null;
+  document.getElementById('checkModalTitle').textContent='新增清單項目';
+  document.getElementById('checkText').value='';
+  document.getElementById('checkModal').classList.add('open');
+}
+
+function openEditCheck(id){
+  _editCheckId=id;
+  const c=S.checks.find(x=>x.id===id);
+  if(!c)return;
+  document.getElementById('checkModalTitle').textContent='編輯清單項目';
+  document.getElementById('checkText').value=c.text;
+  document.getElementById('checkModal').classList.add('open');
+}
+
+function closeCheckModal(){document.getElementById('checkModal').classList.remove('open');}
+
+function saveCheckItem(){
+  const text=document.getElementById('checkText').value.trim();
+  if(!text)return;
+  if(_editCheckId){
+    const c=S.checks.find(x=>x.id===_editCheckId);
+    if(c)c.text=text;
+  }else{
+    S.checks.push({id:uid(),text,done:false});
+  }
+  persist(S);closeCheckModal();render();
+}
+
+function toggleCheck(id,val){
+  const c=S.checks.find(x=>x.id===id);
+  if(c){c.done=val;persist(S);render();}
+}
+
+function deleteCheck(id){
+  if(!confirm('確定刪除此項目？'))return;
+  S.checks=S.checks.filter(c=>c.id!==id);
+  persist(S);render();
+}
+
+/* Close modal on overlay click */
+['eventModal','dayModal','checkModal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',function(e){
+    if(e.target===this)this.classList.remove('open');
+  });
+});
+
+render();
+</script>
+</body>
+</html>
