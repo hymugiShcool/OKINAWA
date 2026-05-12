@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>沖繩 5 天 4 夜行程書（執行版）</title>
+  <style>
+    :root {
+      --bg: #f4f8fb;
+      --surface: #ffffff;
+      --text: #1a2d3d;
+      --muted: #5a6f7f;
+      --accent: #0d7a9c;
+      --accent-soft: #e3f3f8;
+      --border: #c5d8e3;
+      --day-badge: #ff6b4a;
+      --shadow: 0 2px 12px rgba(13, 122, 156, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+      font-size: 1rem;
+      line-height: 1.65;
+      color: var(--text);
+      background: linear-gradient(180deg, #e8f4f8 0%, var(--bg) 320px);
+    }
+
+    .wrap {
+      max-width: 52rem;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3rem;
+    }
+
+    header.doc-header {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 1.75rem 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+
+    header.doc-header h1 {
+      margin: 0 0 0.75rem;
+      font-size: clamp(1.35rem, 4vw, 1.75rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--accent);
+    }
+
+    header.doc-header p {
+      margin: 0.4rem 0;
+      color: var(--text);
+    }
+
+    header.doc-header a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+    }
+
+    header.doc-header a:hover {
+      border-bottom-color: var(--accent);
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    section.day {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 1.5rem 1.5rem 1.35rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    section.day h2 {
+      margin: 0 0 1rem;
+      font-size: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.5rem;
+      border-bottom: 2px solid var(--accent-soft);
+      padding-bottom: 0.65rem;
+    }
+
+    section.day h2 .day-tag {
+      display: inline-block;
+      background: var(--day-badge);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      letter-spacing: 0.06em;
+      vertical-align: middle;
+    }
+
+    section.day h3 {
+      margin: 1.25rem 0 0.5rem;
+      font-size: 1rem;
+      color: var(--accent);
+    }
+
+    section.day h3:first-of-type {
+      margin-top: 0.25rem;
+    }
+
+    .route {
+      font-size: 1.05rem;
+      margin: 0.25rem 0 0.75rem;
+    }
+
+    p {
+      margin: 0.5rem 0;
+    }
+
+    ul {
+      margin: 0.35rem 0 0.75rem;
+      padding-left: 1.25rem;
+    }
+
+    li {
+      margin: 0.25rem 0;
+    }
+
+    strong {
+      color: #143848;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.5rem 0 1rem;
+      font-size: 0.92rem;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--border);
+      padding: 0.55rem 0.65rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) td {
+      background: #fafcfd;
+    }
+
+    .parking-card {
+      background: var(--accent-soft);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      margin: 0.75rem 0;
+      border: 1px solid var(--border);
+    }
+
+    .parking-card h4 {
+      margin: 0 0 0.5rem;
+      font-size: 0.95rem;
+      color: var(--accent);
+    }
+
+    .parking-card ul {
+      margin: 0;
+    }
+
+    section.appendix {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    section.appendix h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1.15rem;
+      color: var(--accent);
+    }
+
+    .checklist {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .checklist li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin: 0.45rem 0;
+    }
+
+    .checklist li::before {
+      content: "☐";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 1rem;
+    }
+
+    footer.note {
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px dashed var(--border);
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      section.day,
+      header.doc-header,
+      section.appendix {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="doc-header">
+      <h1>沖繩 5 天 4 夜行程書（執行版）</h1>
+      <p>
+        住宿：<strong>Nest 那霸提薩吉飯店（Tissage Hotel Naha by Nest）</strong> — 沖繩縣那霸市西 2-14-1<br />
+        官方：<a href="https://www.nesthotel.co.jp/tissagenaha/">ティサージホテル那覇</a>
+      </p>
+      <p class="muted">
+        飯店步行約 <strong>9～10 分</strong>至ゆいレール <strong>「旭橋」</strong>站。那霸機場線：空港 → 県庁前官方標示約 <strong>13 分</strong>（全線與路線圖見
+        <a href="https://www.yui-rail.co.jp/routemap/">ゆいレール</a>）。
+      </p>
+    </header>
+
+    <section class="day" id="day1">
+      <h2><span class="day-tag">DAY 1</span> 那霸機場・飯店・國際通</h2>
+      <h3>行程動線</h3>
+      <p class="route">那霸機場 → Nest 那霸提薩吉飯店 → 國際通</p>
+      <h3>交通</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>路段</th>
+            <th>方式</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>機場 → 飯店</td>
+            <td><strong>ゆいレール</strong>：那霸機場站 → <strong>旭橋</strong>（飯店步行至旭橋站）</td>
+          </tr>
+          <tr>
+            <td>飯店 → 國際通</td>
+            <td><strong>ゆいレール</strong>：旭橋 → <strong>縣廳前</strong>（國際通北側）；若要逛南段可改 <strong>牧志／美榮橋</strong></td>
+          </tr>
+          <tr>
+            <td>自駕與單軌並用</td>
+            <td>車若停牧志：晚餐後可搭單軌 <strong>縣廳前／牧志 → 旭橋</strong> 回飯店，避免酒後駕車</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>若當日已租車：機場取車 → 飯店放行李 → 再開往牧志周邊停車場。</p>
+      <h3>晚餐</h3>
+      <p><strong>選項 1（已預約 19:30）</strong></p>
+      <ul>
+        <li>店家：島野菜とアグー豚・山城牛の店 <strong>こばこ</strong></li>
+        <li>交通：🚐（請向店家確認<strong>集合地點、回程</strong>；若改自駕請確認專用或鄰近停車）</li>
+      </ul>
+      <p><strong>選項 2</strong></p>
+      <ul>
+        <li>店家：暖暮拉麵 那霸牧志店</li>
+        <li>交通：🚐／自駕皆可；暖暮常排隊，建議預留 <strong>30～60 分</strong></li>
+      </ul>
+      <h3>停車場（牧志／國際通周邊參考）</h3>
+      <div class="parking-card">
+        <h4>【 アップルパーク牧志2丁目第3 】</h4>
+        <ul>
+          <li>支付：<strong>現金</strong></li>
+          <li>費率：<strong>60 分 ¥200</strong>（台幣約 40 元級，匯率依當日為準）</li>
+          <li>營業：<strong>24 小時</strong></li>
+          <li>地址：沖繩縣那霸市牧志 2-25-7</li>
+        </ul>
+      </div>
+      <div class="parking-card">
+        <h4>【 嘉数有料停車場 】</h4>
+        <ul>
+          <li>支付：<strong>現金</strong></li>
+          <li>費率：平日 <strong>1 小時 ¥100</strong>，之後每 1 小時 <strong>+¥100</strong></li>
+          <li>營業：<strong>06:00～24:00</strong>（<strong>凌晨 0:00～06:00 無法進出</strong>）</li>
+          <li>地址：沖繩縣那霸市牧志 2-11-8</li>
+          <li>注意：告知車牌後將鑰匙交給工作人員；<strong>離場時付款</strong></li>
+        </ul>
+      </div>
+      <div class="parking-card">
+        <h4>【 Tenbusu 地下停車場 】</h4>
+        <ul>
+          <li>支付：<strong>現金</strong></li>
+          <li>費率：<strong>20 分 ¥100</strong>，之後每 <strong>30 分 +¥100</strong></li>
+          <li>營業：<strong>08:00～24:00</strong></li>
+          <li>地址：沖繩縣那霸市牧志 3-2-10</li>
+        </ul>
+      </div>
+      <div class="parking-card">
+        <h4>【 県民広場地下停車場 】</h4>
+        <ul>
+          <li>支付：<strong>現金</strong></li>
+          <li>費率：每 <strong>60 分 ¥300</strong>，之後每 <strong>30 分 +¥150</strong></li>
+          <li>營業：<strong>06:00～24:00</strong></li>
+          <li>地址：沖繩縣那霸市泉崎 1</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="day" id="day2">
+      <h2><span class="day-tag">DAY 2</span> 豬肉蛋飯糰・波上宮・第一牧志公設市場・PARCO CITY・燒肉王</h2>
+      <h3>行程動線</h3>
+      <p class="route">豬肉蛋飯糰 → 波上宮 → 第一牧志公設市場 → PARCO CITY → 燒肉王</p>
+      <h3>交通</h3>
+      <p><strong>自駕（主軸）</strong></p>
+      <ol>
+        <li>飯店 → <strong>豬肉蛋飯糰（牧志一帶）</strong>：約 <strong>5～10 分</strong>；停車用 Day 1 牧志停車場擇一</li>
+        <li>→ <strong>波上宮</strong>：約 <strong>5～10 分</strong>；周邊搜「<strong>波の上ビーチ 駐車場</strong>」等公有／投幣場</li>
+        <li>→ <strong>第一牧志公設市場</strong>：回牧志步行或短駕，停車同區</li>
+        <li>→ <strong>PARCO CITY</strong>（浦添）：一般道或自動車道約 <strong>25～45 分</strong>（路況浮動）</li>
+        <li>→ <strong>燒肉王</strong>：以<strong>預約分店地址</strong>導航；自 PARCO 至那霸／浦添店多為 <strong>15～40 分</strong></li>
+      </ol>
+      <p><strong>無車時</strong></p>
+      <p>ゆいレール <strong>牧志</strong> 出站 → 豬肉蛋與市場；波上宮以<strong>步行或計程車</strong>；PARCO 見下文「PARCO CITY 參考」；燒肉王以巴士或計程車接續。</p>
+      <h3>餐食</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>餐別</th>
+            <th>內容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>早餐</td>
+            <td>飯店早餐（<strong>請向飯店確認是否含早</strong>）＋豬肉蛋飯糰；若不含早可將飯糰當早午餐</td>
+          </tr>
+          <tr>
+            <td>午餐</td>
+            <td>第一牧志公設市場</td>
+          </tr>
+          <tr>
+            <td>晚餐</td>
+            <td><strong>燒肉王（已預約 18:20）</strong> — 建議 <strong>15:30 前離開 PARCO</strong>，預留塞車與停車</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>PARCO CITY 參考</h3>
+      <ul>
+        <li>地址：〒901-2123 沖繩縣浦添市西洲 3-1-1</li>
+        <li>
+          官網：<a href="https://www.parcocity.jp/">parco city</a>｜交通・停車：<a href="https://www.parcocity.jp/access">access</a>（頁面載駐車場約 <strong>4,000 台免費</strong>等資訊，<strong>以現場為準</strong>）
+        </li>
+        <li>無車時：那霸巴士總站路線（例 <strong>385</strong> 等）或 <strong>おもろまち</strong> 周邊接駁／計程車；詳見官網與 <a href="https://www.okinawabus.com/">沖繩巴士</a></li>
+      </ul>
+    </section>
+
+    <section class="day" id="day3">
+      <h2><span class="day-tag">DAY 3</span> 古宇利大橋南端觀景台・蝦蝦飯・美麗海水族館</h2>
+      <h3>行程動線</h3>
+      <p class="route">古宇利大橋觀景台（南端）→ 蝦蝦飯 → 美麗海水族館</p>
+      <h3>交通</h3>
+      <ul>
+        <li>飯店 → <strong>古宇利島</strong>：<strong>沖繩自動車道</strong>北上，單程多為 <strong>約 1.5～2.5 小時</strong>（含休息）；建議 <strong>07:00～08:00 前出發</strong></li>
+        <li>古宇利 → <strong>蝦蝦飯</strong>：約 <strong>5～20 分</strong>（依店家位置）</li>
+        <li>蝦蝦飯 → <strong>海洋博公園／美麗海水族館</strong>：約 <strong>20～40 分</strong></li>
+        <li>回程那霸：至少預留 <strong>約 2 小時車程＋休息</strong></li>
+      </ul>
+      <h3>餐食</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>餐別</th>
+            <th>內容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>早餐</td>
+            <td>飯店早餐</td>
+          </tr>
+          <tr>
+            <td>午餐</td>
+            <td>蝦蝦飯（營業 <strong>11:00～16:00</strong>，務必在此時段內抵達）</td>
+          </tr>
+          <tr>
+            <td>晚餐</td>
+            <td>擇一：<strong>名護市區</strong>／<strong>許田道之驛</strong>／<strong>高速公路 SA 簡餐</strong>／<strong>回那霸再吃</strong>（最晚營業請事先查）</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>時間軸提醒</h3>
+      <p>
+        水族館認真逛＋海豚秀常需 <strong>3～4 小時</strong>；最晚入場與門票見
+        <a href="https://www.okinawa-kaiho.jp/">國營沖繩紀念公園／美ら海水族館</a>。
+      </p>
+      <h3>停車場</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>地點</th>
+            <th>說明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>古宇利大橋停車場</strong></td>
+            <td>南端展望台周邊觀光客向駐車場；假日易滿，早到為宜（地圖搜「古宇利大橋 南側 駐車場」）</td>
+          </tr>
+          <tr>
+            <td><strong>蝦蝦飯停車場／第二停車場</strong></td>
+            <td>依現場看板與店員指示</td>
+          </tr>
+          <tr>
+            <td><strong>美麗海水族館</strong></td>
+            <td>海洋博公園內<strong>有料停車場</strong>（費率與平面圖以 <a href="https://www.okinawa-kaiho.jp/">官方</a> 為準）</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>單日駕車時間長，建議<strong>兩人以上輪流開車</strong>，並備水與輕食。</p>
+    </section>
+
+    <section class="day" id="day4">
+      <h2><span class="day-tag">DAY 4</span> 西來院達摩寺・泊港魚市場・AEON MALL 來客夢・美國村</h2>
+      <h3>行程動線</h3>
+      <p class="route">西來院（達摩寺）→ 泊港魚市場 → AEON MALL 來客夢 → 美國村</p>
+      <h3>交通（車程為約略值）</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>路段</th>
+            <th>約略車時</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>飯店 → 西來院（豐見城）</td>
+            <td>15～25 分</td>
+          </tr>
+          <tr>
+            <td>西來院 → 泊港魚市場（那霸）</td>
+            <td>15～25 分</td>
+          </tr>
+          <tr>
+            <td>泊港 → AEON 來客夢（北中城村）</td>
+            <td>40～55 分</td>
+          </tr>
+          <tr>
+            <td>來客夢 → 美國村（北谷）</td>
+            <td>25～40 分</td>
+          </tr>
+          <tr>
+            <td>美國村 → 飯店</td>
+            <td>35～50 分</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>泊港建議 <strong>09:00～10:30 前</strong>抵達較熱鬧。</p>
+      <h3>餐食</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>餐別</th>
+            <th>內容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>早餐</td>
+            <td>飯店早餐</td>
+          </tr>
+          <tr>
+            <td>午餐</td>
+            <td>泊港魚市場（丼、立食、熟食）</td>
+          </tr>
+          <tr>
+            <td>晚餐</td>
+            <td><strong>AEON 來客夢</strong> 美食街或超市 <strong>＋</strong> <strong>美國村</strong> 小食（塔可、海景酒吧、迴轉壽司等）；或擇一區吃正餐即可</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>停車場</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>地點</th>
+            <th>說明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>西來院</strong></td>
+            <td>寺方停車格有限，早到為宜；滿位時依告示停合法路外區</td>
+          </tr>
+          <tr>
+            <td><strong>泊港市場</strong></td>
+            <td>市場建物附設或港邊公有駐車場（地圖搜「那霸泊港市場 駐車場」）</td>
+          </tr>
+          <tr>
+            <td><strong>AEON 來客夢</strong></td>
+            <td>大型<strong>免費</strong>停車場（記車位區號）</td>
+          </tr>
+          <tr>
+            <td><strong>美國村</strong></td>
+            <td>Depot Island、北谷公園周邊<strong>付費</strong>停車場多；週末傍晚易塞</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="day" id="day5">
+      <h2><span class="day-tag">DAY 5</span> 國際通・免稅採購・Ashibinna・返台</h2>
+      <h3>行程動線（依航班調整）</h3>
+      <ul>
+        <li><strong>晚班機</strong>：退房 → <strong>國際通</strong> → <strong>市區免稅（例：DFS／T ギャラリア沖縄，若你指的 DFF 為此類請核對店名）</strong> → <strong>Ashibinna OUTLET</strong>（豐見城、近機場）→ <strong>還車</strong> → 那霸空港</li>
+        <li><strong>早班機</strong>：退房 → <strong>Ashibinna 短停或略過</strong> → <strong>還車</strong> → 報到；國際通採買建議改前一日</li>
+      </ul>
+      <p>若為市區免稅店採購，請確認<strong>機場取貨櫃台</strong>與航班時間是否來得及。</p>
+      <h3>交通</h3>
+      <p>那霸市區 ↔ Ashibinna 自駕約 <strong>15～25 分</strong>；還車後依租車公司指示前往航廈。</p>
+      <h3>餐食</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>餐別</th>
+            <th>內容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>早餐</td>
+            <td>飯店早餐或國際通早午餐</td>
+          </tr>
+          <tr>
+            <td>午餐</td>
+            <td>國際通、牧志周邊，或 Ashibinna 內美食街</td>
+          </tr>
+          <tr>
+            <td>晚餐</td>
+            <td>早班或傍晚機：<strong>空港內</strong>簡餐；晚班機：市區吃完再進場</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>停車場</h3>
+      <ul>
+        <li>國際通：可沿用 Day 1 <strong>牧志／県民広場</strong> 等投幣或地下場</li>
+        <li><strong>DFS 等市區免稅</strong>：鄰近商業大樓<strong>付費</strong>停車場</li>
+        <li><strong>Ashibinna</strong>：<a href="https://ashibinaa.okinawa/">公式アクセス</a>（多為<strong>免費</strong>大型停車場）</li>
+      </ul>
+      <h3>返台前緩衝</h3>
+      <p>國際線建議預留 <strong>約 2.5～3 小時</strong>（含還車、報到、安檢、免稅取貨）；廉航依航空公司建議時間。</p>
+    </section>
+
+    <section class="appendix" id="yui">
+      <h2>ゆいレール站點速查（國際通周邊）</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>站名</th>
+            <th>大致對應</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>県庁前</td>
+            <td>國際通北側、Palette kumoji、部分觀光巴士集合點</td>
+          </tr>
+          <tr>
+            <td>美榮橋／牧志</td>
+            <td>國際通中段、牧志公設市場周邊</td>
+          </tr>
+          <tr>
+            <td>壺屋</td>
+            <td>やちむん通り（壺屋陶藝街）</td>
+          </tr>
+          <tr>
+            <td>首里</td>
+            <td>首里城公園（步行約 15 分或依現場接駁）</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="appendix" id="backup-bus">
+      <h2>備案：美麗海水族館「一日巴士」（未開車或想省力時）</h2>
+      <p>那霸往返北部車程長，可改參加含入場券的一日巴士（集合點多在県庁前／DFS 周邊）。參考：</p>
+      <ul>
+        <li>
+          <a href="https://www.his-j.com/okinawa/op/activity/detail/?opid=268">H.I.S. LeaLea 美ら島観光バス例</a>（價格、成行人數、時刻以預約頁為準）
+        </li>
+        <li>
+          其他比價：<a href="https://www.tabirai.net/activity/okinawa/">たびらい沖縄</a>｜<a href="https://www.klook.com/">Klook</a>｜<a href="https://www.veltra.com/jp/japan/okinawa/">VELTRA</a>
+        </li>
+      </ul>
+      <p>採用巴士日時，<strong>第 3 天自駕北部</strong>可整段替換為巴士行程（與本書 Day 2／4 不重疊為原則，請自行對調日期）。</p>
+    </section>
+
+    <section class="appendix" id="checklist">
+      <h2>出發前檢核清單</h2>
+      <ul class="checklist">
+        <li>燒肉王：<strong>分店名稱、地址、18:20 預約</strong>已存手機</li>
+        <li>こばこ：<strong>19:30 接駁上下車點</strong>或自駕停車已確認</li>
+        <li>飯店：<strong>是否含早餐</strong>、<strong>退房時間</strong></li>
+        <li>第 3 天：水族館<strong>門票</strong>與<strong>最晚入場</strong></li>
+        <li>第 5 天：<strong>航班起飛時間</strong>、<strong>還車與滿油</strong>、<strong>國際線報到緩衝</strong></li>
+        <li>支付：PARCO 接駁等部分路線僅<strong>現金</strong>，備千円與零錢</li>
+        <li>駕照：<strong>國際駕照＋本國駕照</strong>（依租車公司與國籍規定）</li>
+      </ul>
+      <footer class="note">
+        本書彙整自既有計畫與執行補強。價格、營業時間、巴士編號、停車費率請以出發當日官網與現場標示為準。更新：2026-05-12。
+      </footer>
+    </section>
+  </div>
+</body>
+</html>
